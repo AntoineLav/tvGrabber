@@ -25,7 +25,7 @@ public class App
 {
 	private static Logger logger = LoggerFactory.getLogger(App.class);
 
-	private static JSONObject channelsList;
+	protected static JSONObject channelsList;
 	private static JSONObject programList;
 	private static Mongo mongo;
 	private static DB database;

@@ -19,7 +19,10 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Master {
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+
+public class Master extends App {
 
 	private Logger logger = LoggerFactory.getLogger(Master.class);
 	private Document document;
@@ -108,19 +111,30 @@ public class Master {
 					
 					switch(listAttributes.get(i).getName()) {
 					case "channel":
-						obj.put("channel", listAttributes.get(i).getValue());
+						JSONObject jsonObj = new JSONObject();
+						jsonObj.put("id", listAttributes.get(i).getValue());
+						
+						String channelName = null;
+						BasicDBObject query = new BasicDBObject();
+						query.put("id", listAttributes.get(i).getValue());
+						DBCursor cursor = channelsCollection.find(query);
+						while(cursor.hasNext()){
+							channelName = cursor.next().get("name").toString();
+						}
+						jsonObj.put("channelName", channelName);
+						obj.put("channel", jsonObj);
 						break;
 
 					case "start":
 						date = parseDate(listAttributes.get(i).getValue());
 						logger.debug("start: {}", date.toString());
-						obj.put("start", date);
+						obj.put("start", date.toString());
 						break;
 
 					case "stop":
 						date = parseDate(listAttributes.get(i).getValue());
 						logger.debug("stop: {}", date.toString());
-						obj.put("stop", date);
+						obj.put("stop", date.toString());
 						break;
 						
 					case "showview":
