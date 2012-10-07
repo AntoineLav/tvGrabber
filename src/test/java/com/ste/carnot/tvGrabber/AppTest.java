@@ -20,7 +20,7 @@ public class AppTest extends TestCase {
 	public void testParseDate() {
 		Master master = new Master();
 		try {
-			Date date = new SimpleDateFormat("YYYYMMddhhmmss").parse("20120930005500");
+			Date date = new SimpleDateFormat("yyyyMMddhhmmss").parse("20120930005500");
 			assertEquals(date, master.parseDate("20120930005500 +0200"));
 		}
 		catch(Exception e) {

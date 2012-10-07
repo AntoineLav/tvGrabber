@@ -210,7 +210,9 @@ public class Master extends App {
 	
 	protected Date parseDate(String date) {
 		try {
-			Date convertedDate = new SimpleDateFormat("YYYYMMddhhmmss").parse(date);
+			logger.debug("Date to parse: {}", date);
+			Date convertedDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(date);
+			logger.debug("Date parsed: {}", convertedDate.toString());
 			return convertedDate;
 		}
 		catch(Exception e) {
