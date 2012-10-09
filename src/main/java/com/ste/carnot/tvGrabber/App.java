@@ -31,8 +31,8 @@ public class App
 	private static DB database;
 	protected static DBCollection channelsCollection;
 
-	//private static File file = new File("/Users/antoine/Documents/tvGrab/tv-2.xml");
-	private static File file = new File("/home/europ/tvGrab/tv.xml");
+	private static File file = new File("/Users/antoine/Documents/tvGrab/tv-2.xml");
+	//private static File file = new File("/home/europ/tvGrab/tv.xml");
 	private static String mongoAddress = "127.0.0.1";
 	private static int mongoPort = 27017;
 	private static String dbName = "tvGrabber";

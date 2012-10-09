@@ -1,6 +1,7 @@
 package com.ste.carnot.tvGrabber;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,6 +14,10 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -27,6 +32,7 @@ public class Master extends App {
 	private Logger logger = LoggerFactory.getLogger(Master.class);
 	private Document document;
 	private Element root;
+	
 
 	public JSONObject findChannels(File file) {
 
@@ -107,13 +113,13 @@ public class Master extends App {
 				List<Attribute> listAttributes = current.getAttributes();
 
 				for (int i=0; i<listAttributes.size(); i++) {
-					Date date = null;
-					
+					long date;
+
 					switch(listAttributes.get(i).getName()) {
 					case "channel":
 						JSONObject jsonObj = new JSONObject();
 						jsonObj.put("id", listAttributes.get(i).getValue());
-						
+
 						String channelName = null;
 						BasicDBObject query = new BasicDBObject();
 						query.put("id", listAttributes.get(i).getValue());
@@ -127,16 +133,16 @@ public class Master extends App {
 
 					case "start":
 						date = parseDate(listAttributes.get(i).getValue());
-						logger.debug("start: {}", date.toString());
-						obj.put("start", date.toString());
+						logger.debug("start: {}", date);
+						obj.put("start", date);
 						break;
 
 					case "stop":
 						date = parseDate(listAttributes.get(i).getValue());
-						logger.debug("stop: {}", date.toString());
-						obj.put("stop", date.toString());
+						logger.debug("stop: {}", date);
+						obj.put("stop", date);
 						break;
-						
+
 					case "showview":
 						obj.put("showview", listAttributes.get(i).getValue());
 						break;
@@ -207,17 +213,29 @@ public class Master extends App {
 
 
 	}
-	
-	protected Date parseDate(String date) {
+
+	protected long parseDate(String date) {
 		try {
 			logger.debug("Date to parse: {}", date);
-			Date convertedDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(date);
-			logger.debug("Date parsed: {}", convertedDate.toString());
-			return convertedDate;
+			
+			Date simpleDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(date);;
+			
+			/*
+			DateTime dateTime = new DateTime(simpleDate);
+			
+			logger.debug("DateTime to format: {}", dateTime);
+			
+			DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
+			DateTime convertedDate = parser.parseDateTime(dateTime.toString());
+			*/
+			
+			logger.debug("Timestamp: {}", simpleDate.getTime());
+			
+			return simpleDate.getTime();
 		}
 		catch(Exception e) {
 			logger.error("Bug: {}", e.toString());
-			return null;
+			return 0;
 		}
 	}
 }
