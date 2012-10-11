@@ -66,6 +66,9 @@ public class Master extends App {
 				JSONObject obj = new JSONObject();
 				obj.put("name", current.getChild("display-name").getText());
 				obj.put("id", current.getAttributeValue("id"));
+				String[] tabChannelId = current.getAttributeValue("id").split("\\.");
+				int channelNumber =  Integer.parseInt(tabChannelId[0].substring(1, tabChannelId[0].length()));
+				obj.put("channelNumber", channelNumber);
 				array.add(obj);
 			}
 
@@ -113,7 +116,7 @@ public class Master extends App {
 				List<Attribute> listAttributes = current.getAttributes();
 
 				for (int i=0; i<listAttributes.size(); i++) {
-					long date;
+					int date;
 
 					switch(listAttributes.get(i).getName()) {
 					case "channel":
@@ -214,11 +217,15 @@ public class Master extends App {
 
 	}
 
-	protected long parseDate(String date) {
+	protected int parseDate(String date) {
 		try {
 			logger.debug("Date to parse: {}", date);
 			
-			Date simpleDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(date);;
+			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss X");
+			Date simpleDate = (Date) formatter.parse(date);
+			
+			Timestamp timestampDate = new Timestamp(simpleDate.getTime());
+			String stringDate = String.valueOf(timestampDate.getTime());
 			
 			/*
 			DateTime dateTime = new DateTime(simpleDate);
@@ -228,10 +235,12 @@ public class Master extends App {
 			DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
 			DateTime convertedDate = parser.parseDateTime(dateTime.toString());
 			*/
+			if(stringDate.length() > 10) {
+				stringDate = stringDate.substring(0, 10);
+			}
 			
-			logger.debug("Timestamp: {}", simpleDate.getTime());
-			
-			return simpleDate.getTime();
+			logger.debug("Timestamp: {}", stringDate);
+			return Integer.parseInt(stringDate);
 		}
 		catch(Exception e) {
 			logger.error("Bug: {}", e.toString());
